@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import HealthKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        requestHealthKitAccess()
         return true
     }
 
@@ -41,6 +43,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    func applicationShouldRequestHealthAuthorization(_ application: UIApplication) {
+        let healthStore = HKHealthStore()
+        healthStore.handleAuthorizationForExtension { success, error in
+            
+        }
+    }
+    
+    func requestHealthKitAccess() {
+        
+        let sampleTypes: Set<HKSampleType> = [
+        .workoutType(),
+        HKSampleType.quantityType(forIdentifier: .heartRate)!,
+        HKSampleType.quantityType(forIdentifier: .activeEnergyBurned)!,
+        HKSampleType.quantityType(forIdentifier: .distanceCycling)!,
+        HKSampleType.quantityType(forIdentifier: .distanceWalkingRunning)!,
+        HKSampleType.quantityType(forIdentifier: .distanceSwimming)!,
+        HKSampleType.quantityType(forIdentifier: .flightsClimbed)!
+        ]
+        
+        let healthStore = HKHealthStore()
+        
+        healthStore.requestAuthorization(toShare: sampleTypes, read: sampleTypes) { success, error in
+            if success {
+            //start workout!
+            }
+        }
+    }
+    
+    
 }
 
